@@ -1,0 +1,61 @@
+import numpy as np
+import pandas as pd
+df=pd.read_csv(r"E:\visss\3-2\extra_ml\computer.csv")
+df.info()
+df.info()
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+df['age']=le.fit_transform(df['age'])
+df[' income']=le.fit_transform(df[' income'])
+df[' student']=le.fit_transform(df[' student'])
+df[' buy']=le.fit_transform(df[' buy'])
+df.dtypes
+y=df[' buy']
+y
+x=df.drop([' buy'],axis=1)
+from sklearn.naive_bayes import GaussianNB
+nb_model=GaussianNB()
+nb_model.fit(x,y)
+y_pred=nb_model.predict(x)
+y_pred
+a=int(input('enter age'))
+i=int(input('enter income'))
+s=int(input('enter student'))
+new_sample=np.array([[a,i,s]])
+class_lab=nb_model.predict(new_sample)
+if class_lab[0]==0:
+    print('No')
+else:
+    print('Yes')
+
+
+
+
+from sklearn.tree import DecisionTreeClassifier
+dt_model1=DecisionTreeClassifier
+dt_model1.fit(x,y)
+dt_model1_pred=dt_model1.predict(x)
+from sklearn.tree import plot_tree
+plot_tree(dt_model1)
+dt_model2=DecisionTreeClassifier(criterion='entropy')
+dt_model2.fit(x,y)
+dt_model2_pred=dt_model2.predict(x)
+plot_tree(dt_model2)
+
+
+
+
+x=x.drop([' income'],axis=1)
+from sklearn.neighbors import KNeighborsClassifier
+knn_model=KNeighborsClassifier(n_neighbors=3)
+knn_model.fit(x,y)
+y_pred=knn_model.predict(x)
+a=int(input('enter age'))
+s=int(input('enter student'))
+new_sample=np.array([[a,s]])
+class_lab=knn_model.predict(new_sample)
+if class_lab[0]==0:
+    print('No')
+else:
+    print('Yes')
+
