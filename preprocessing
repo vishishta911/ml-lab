@@ -1,0 +1,48 @@
+from sklearn.datasets import load_iris
+iris_dataset = load_iris()
+print(iris_dataset)
+iris_dataset.feature_names
+iris_dataset.target_names
+iris_df=pd.DataFrame(data=iris_dataset.data,columns=iris_dataset.feature_names)
+iris_df['species']=iris_dataset.target
+iris_df.info()
+iris_df.corr()
+import seaborn as sb
+sb.heatmap(iris_df.corr())
+iris_df.describe()
+iris_df.dtypes
+sb.pairplot(iris_df)
+sb.countplot(iris_df,x='sepal length (cm)')
+y=iris_df['species']
+x=iris_df.drop(['species'],axis=1)
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3)
+
+
+
+
+df=pd.read_csv(r"E:\visss\3-2\extra_ml\ada.csv")
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+df['Color']=le.fit_transform(df['Color'])
+df['Type']=le.fit_transform(df['Type'])
+df['Origin']=le.fit_transform(df['Origin'])
+df['Stolen?']=le.fit_transform(df['Stolen?'])
+y=df['Stolen?']
+y
+x=df.drop(['Stolen?'],axis=1)
+from sklearn.ensemble import AdaBoostClassifier
+#create model
+ada_boost=AdaBoostClassifier()
+#model training
+ada_boost.fit(x,y)
+y_pred=ada_boost.predict(x)
+c=int(input('enter color'))
+t=int(input('enter type'))
+o=int(input('enter origin'))
+new_sample=np.array([[c,t,o]])
+class_lab=ada_boost.predict(new_sample)
+if class_lab[0]==0:
+    print('No')
+else:
+    print('Yes')
