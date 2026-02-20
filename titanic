@@ -1,0 +1,32 @@
+#import libraries
+import numpy as np
+import pandas as pd
+import seaborn as sb
+titanic_dataset=sb.load_dataset('titanic')
+titanic_dataset.info()
+titanic_dataset.isnull().sum()
+titanic_dataset.dtypes
+titanic_dataset['age'].isnull().sum()
+titanic_dataset['age'].fillna(titanic_dataset['age'].mean(),inplace=True)
+titanic_dataset['embarked'].dtypes
+titanic_dataset['embarked'].fillna(titanic_dataset['embarked'].mode()[0],inplace=True)
+titanic_dataset['embarked'].isnull().sum()
+titanic_dataset['deck'].fillna(titanic_dataset['deck'].mode()[0],inplace=True)
+titanic_dataset['embark_town'].fillna(titanic_dataset['embark_town'].mode()[0],inplace=True)
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+titanic_dataset['sex']=le.fit_transform(titanic_dataset['sex'])
+titanic_dataset['sex']
+titanic_dataset['embarked']=le.fit_transform(titanic_dataset['embarked'])
+titanic_dataset['class']=le.fit_transform(titanic_dataset['class'])
+titanic_dataset['who']=le.fit_transform(titanic_dataset['who'])
+titanic_dataset['adult_male']=le.fit_transform(titanic_dataset['adult_male'])
+titanic_dataset['deck']=le.fit_transform(titanic_dataset['deck'])
+titanic_dataset['embark_town']=le.fit_transform(titanic_dataset['embark_town'])
+titanic_dataset['alive']=le.fit_transform(titanic_dataset['alive'])
+titanic_dataset['alone']=le.fit_transform(titanic_dataset['alone'])
+y=titanic_dataset['survived']
+x = titanic_dataset.drop(
+    ['survived', 'alive', 'who', 'adult_male'],
+    axis=1
+)
