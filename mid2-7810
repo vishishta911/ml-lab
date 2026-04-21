@@ -1,0 +1,120 @@
+week 7
+age	gender	restecg	slope	ca	heartdisease
+56	0	2	1	2	1
+87	1	2	2	3	1
+32	1	1	2	1	0
+23	0	0	1	2	0
+
+%pip install pgmpy pandas
+import pandas as pd
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.inference import VariableElimination
+data = pd.read_csv(r"C:\Users\vishi\Downloads\heartdisease(in).csv")
+model = DiscreteBayesianNetwork([('age','heartdisease'),('gender','heartdisease'),('restecg','heartdisease'),('slope','heartdisease'),('ca','heartdisease')])
+model.fit(data,estimator = MaximumLikelihoodEstimator)
+model_infer = VariableElimination(model)
+q = model_infer.query(variables = ['heartdisease'],evidence = {'restecg':1})
+print(q)
+
+
+
+week 8
+#IMPORT LIBRARIES
+import tensorflow as tf
+from tensorflow.keras import models,layers
+#MNIST DATASET
+(X_train,Y_train),(X_test,Y_test)=tf.keras.datasets.mnist.load_data()
+#explore dataset
+X_train.shape #(60000,28,28)
+X_test.shape #(60000,)
+Y_train.shape #(10000, 28, 28)
+Y_test.shape #(10000,)
+#plot images from datasets
+import matplotlib.pyplot as plt
+plt.imshow(X_train[20],cmap='gray') #20th image from training data
+Y_train[20] #actual digit
+Y_test[100]
+#Normalization- converting pixels into numbers
+X_train=X_train/255
+X_test=X_test/255
+#CREATE A MODEL
+model=models.Sequential([layers.Flatten(input_shape=(28,28)),
+                          layers.Dense(64,activation='relu'),
+                          layers.Dense(10,activation='softmax')])
+
+#Converts 28×28 → 784 (1D vector)
+#Activation = ReLU → introduces non-linearity
+#Activation = Softmax → gives probabilities
+model.summary()
+#compile the model
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+#optimizer='adam' → adjusts weights efficiently
+#loss function → measures error
+#accuracy → performance metric
+#model training
+model.fit(X_train,Y_train,epochs=20)
+#epochs=20 → dataset is passed 20 times
+#testing accuracy and loss
+model.evaluate(X_test,Y_test)
+#model prediction
+model.predict(X_test[10].reshape(1,28,28))
+import numpy as np
+np.argmax(model.predict(X_test[10].reshape(1,28,28))) #prob for 1 image
+Y_test[10]
+plt.imshow(X_test[10],cmap='gray')
+
+
+
+week 10
+# Import libraries
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers, models
+# Load MNIST dataset
+(X_train, y_train), (X_test, y_test) = tf.keras.datasets.mnist.load_data()
+X_train.shape
+# Normalize the data
+X_train = X_train / 255.0
+X_test = X_test / 255.0
+# Split dataset into 2 parts
+X1, X2 = np.array_split(X_train, 2)
+y1, y2 = np.array_split(y_train, 2)
+# Create model function
+def create_model():
+    model = models.Sequential([
+        layers.Flatten(input_shape=(28, 28)),
+        layers.Dense(64, activation='relu'),
+        layers.Dense(10, activation='softmax')
+    ])
+
+    model.compile(
+        optimizer='adam',
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
+
+    return model
+
+# Train two models
+model1 = create_model()
+model1.fit(X1, y1, epochs=2, verbose=0)
+model2 = create_model()
+model2.fit(X2, y2, epochs=2, verbose=0)
+# Aggregate (average weights)
+w1 = model1.get_weights()
+w2 = model2.get_weights()
+
+avg_weights = []
+for i in range(len(w1)):
+    avg_weights.append((w1[i] + w2[i]) / 2)
+# Create final model
+final_model = create_model()
+final_model.set_weights(avg_weights)
+# Test the final model
+loss, acc = final_model.evaluate(X_test, y_test, verbose=0)
+
+print("Final Accuracy:", acc)
