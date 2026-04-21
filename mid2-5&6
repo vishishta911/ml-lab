@@ -1,0 +1,101 @@
+from sklearn.datasets import load_iris
+iris_data=load_iris()
+iris_data
+import pandas as pd
+iris_df=pd.DataFrame(data=iris_data.data,columns=iris_data.feature_names)
+iris_df
+iris_df['target']=iris_data.target
+iris_df
+# Correlation heatmap
+import seaborn as sb
+import matplotlib.pyplot as plt
+
+sb.heatmap(iris_df.corr())
+plt.show()
+
+# Pair plot
+sb.pairplot(iris_df)
+plt.show()
+
+week 5
+#model 1 KMEANS
+from sklearn.cluster import KMeans
+km_model=KMeans(n_clusters=3)
+x=iris_df.drop(['target'],axis=1)
+km_clusters=km_model.fit_predict(x)
+print(km_clusters)
+kmeans_centroids=km_model.cluster_centers_
+print(kmeans_centroids)
+#model2 GMM(EM)
+from sklearn.mixture import GaussianMixture
+gm_model=GaussianMixture(n_components=3)
+gm_clusters=gm_model.fit_predict(x)
+gm_clusters
+gm_centroid=gm_model.means_
+print(gm_centroid)
+#compare model1(KMeans) and EM
+from sklearn.metrics import silhouette_score
+print('KMEANS score is',silhouette_score(x,km_clusters))
+print('EM score is',silhouette_score(x,gm_clusters))
+if(silhouette_score(x,km_clusters)>silhouette_score(x,gm_clusters)):
+    print('kmeans doing better clustering')
+else:
+    print('em doing better clustering')
+
+#kmeans cluster visualisation
+import matplotlib.pyplot as plt
+plt.title('KMEANS CLUSTERS')
+plt.scatter(x['sepal length (cm)'],x['sepal width (cm)'], c=km_clusters)
+plt.show()
+#em cluster visualisation
+import matplotlib.pyplot as plt
+plt.title('EM CLUSTERS')
+plt.scatter(x['sepal length (cm)'],x['sepal width (cm)'], c=gm_clusters)
+plt.show()
+
+
+
+week 6
+#model 1 KMEANS
+from sklearn.cluster import KMeans
+kmeans_model=KMeans(n_clusters=3)
+kmeans_clust=kmeans_model.fit_predict(x)
+kmeans_clust
+#model2-hierarchical clustering
+from sklearn.cluster import AgglomerativeClustering
+#create model
+agg_model=AgglomerativeClustering(n_clusters=3)
+#model training
+agg_clust=agg_model.fit_predict(x)
+#print clusters
+agg_clust
+#compare model1 & model2
+from sklearn.metrics import silhouette_score
+print('model1 score of kmeans is:',silhouette_score(x,kmeans_clust))
+print('model2 score of hierarchical clustering is:',silhouette_score(x,agg_clust))
+#visualisation
+#cluster plotting with both the models
+import matplotlib.pyplot as plt
+plt.title('KMEANS CLUSTERS WITH 2 FEATURES')
+plt.scatter(x['sepal length (cm)'],x['sepal width (cm)'],c=kmeans_clust)
+plt.show()
+plt.title('HIERARCHICAL CLUSTERS WITH 2 FEATURES')
+plt.scatter(x['sepal length (cm)'],x['sepal width (cm)'],c=agg_clust)
+plt.show()
+from scipy.cluster.hierarchy import linkage, dendrogram
+import matplotlib.pyplot as plt
+linked = linkage(X, method="ward")
+dendrogram(linked)
+plt.show()
+link = linkage(X, method = "average")
+dendrogram(link)
+plt.show()
+
+
+bc
+from sklearn.datasets import load_breast_cancer
+bc_ds=load_breast_cancer()
+bc_ds
+bc_df=pd.DataFrame(data=bc_ds.data,columns=bc_ds.feature_names)
+X=bc_df.drop(['target'],axis=1)
+kmeans_model=KMeans(n_clusters=3)
