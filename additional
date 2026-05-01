@@ -1,0 +1,46 @@
+import pandas as pd
+import numpy as np
+from sklearn.datasets import load_diabetes
+diabetes=load_diabetes()
+df=pd.DataFrame(data=diabetes.data,columns=diabetes.feature_names)
+df
+df['target']=diabetes.target
+df
+x=df.drop(['target'],axis=1)
+y=df['target']
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3)
+from sklearn.metrics import mean_squared_error, r2_score
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+from sklearn.linear_model import LinearRegression
+# Model
+model = LinearRegression()
+# Train
+model.fit(x_train, y_train)
+# Predict
+y_pred = model.predict(x_test)
+# Evaluation
+print("MSE:", mean_squared_error(y_test, y_pred))
+print("R2 Score:", r2_score(y_test, y_pred))
+
+
+
+
+from sklearn.datasets import load_breast_cancer
+bc_ds=load_breast_cancer()
+bc_ds
+bc_df=pd.DataFrame(data=bc_ds.data,columns=bc_ds.feature_names)
+bc_df['target']=bc_ds.target
+x=bc_df.drop(['target'],axis=1)
+y=bc_df['target']
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+from sklearn.linear_model import LogisticRegression
+log_model=LogisticRegression(max_iter=5000)
+log_model.fit(x_train,y_train)
+y_pred=log_model.predict(x_test)
+from sklearn.metrics import accuracy_score, classification_report
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nReport:\n", classification_report(y_test, y_pred))
+from sklearn.metrics import confusion_matrix
+print("confusion matrix:\n",confusion_matrix(y_test,y_pred))
