@@ -99,3 +99,18 @@ bc_ds
 bc_df=pd.DataFrame(data=bc_ds.data,columns=bc_ds.feature_names)
 X=bc_df.drop(['target'],axis=1)
 kmeans_model=KMeans(n_clusters=3)
+
+
+
+week7
+%pip install pgmpy pandas
+import pandas as pd
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.inference import VariableElimination
+data = pd.read_csv(r"C:\Users\vishi\Downloads\heartdisease(in).csv")
+model = DiscreteBayesianNetwork([('age','heartdisease'),('gender','heartdisease'),('restecg','heartdisease'),('slope','heartdisease'),('ca','heartdisease')])
+model.fit(data,estimator = MaximumLikelihoodEstimator)
+model_infer = VariableElimination(model)
+q = model_infer.query(variables = ['heartdisease'],evidence = {'restecg':1})
+print(q)
